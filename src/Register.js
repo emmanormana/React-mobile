@@ -36,9 +36,10 @@ const Register = () => {
   }, []);
 
   useEffect(() => {
-    const result = USER_REGEX.test(user);
-    console.log(result);
-    console.log(user);
+    // const result = USER_REGEX.test(user);
+    const result = true;
+    // console.log(result);
+    // console.log(user);
     setValidName(result);
   }, [user]);
 
@@ -58,7 +59,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // if button enabled with JS hack
-    const v1 = USER_REGEX.test(user);
+    // const v1 = USER_REGEX.test(user);
+    const v1 = true;
     const v2 = PWD_REGEX.test(pwd);
     if (!v1 || !v2) {
       setErrMsg("invalid Entry");
@@ -83,8 +85,9 @@ const Register = () => {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
         console.log("Here are we go.");
-        setErrMsg("Username Taken");
+        setErrMsg("Email Taken");
       } else {
+        console.log(err.response?.status);
         setErrMsg("Registration Failed");
       }
       errRef.current.focus();
@@ -111,8 +114,8 @@ const Register = () => {
           </p>
           <h1>Register</h1>
           <form onSubmit={handleSubmit}>
-            <label htmlFor="username">
-              Username:
+            <label htmlFor="email">
+              Email:
               <FontAwesomeIcon
                 icon={faCheck}
                 className={validName ? "valid" : "hide"}
@@ -125,7 +128,7 @@ const Register = () => {
 
             <input
               type="text"
-              id="username"
+              id="email"
               ref={userRef}
               autoComplete="off"
               onChange={(e) => setUser(e.target.value)}
