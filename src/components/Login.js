@@ -164,7 +164,16 @@ const Login = () => {
               </label>
             </Item>
             <Box sx={{ height: 1, alignContent: "center" }}>
-              <TextField id="outlined-basic" variant="outlined" />
+              <TextField
+                id="username"
+                variant="outlined"
+                type="text"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
+                required
+              />
               <input
                 type="text"
                 id="username"
