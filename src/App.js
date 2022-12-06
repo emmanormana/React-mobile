@@ -10,6 +10,7 @@ import Lounge from "./components/Lounge";
 import LinkPage from "./components/LinkPage";
 import RequireAuth from "./components/RequireAuth";
 import { Routes, Route } from "react-router-dom";
+import Profile from "./components/Profile";
 
 const ROLES = {
   Authorized: 5001,
@@ -29,7 +30,7 @@ function App() {
 
         {/* we want to protect these routes */}
         <Route element={<RequireAuth allowedRoles={[ROLES.Public]} />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Profile />} />
         </Route>
 
         <Route element={<RequireAuth allowedRoles={[ROLES.Public]} />}>
@@ -46,6 +47,14 @@ function App() {
           }
         >
           <Route path="lounge" element={<Lounge />} />
+        </Route>
+
+        <Route
+          element={
+            <RequireAuth allowedRoles={[ROLES.User, ROLES.Authorized]} />
+          }
+        >
+          <Route path="profile/:id" element={<Profile />} />
         </Route>
 
         {/* catch all */}

@@ -32,15 +32,15 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const StyledButton = (props) => (
+const SubmitButton = (props) => (
   <Button
+    type="submit"
     sx={{
       padding: 1, // means "theme.spacing(1)", NOT "1px"
       color: "black",
       backgroundColor: grey[400],
       width: 200,
       fontWeight: "bold",
-      textAlign: "right",
     }}
   >
     {props.children}
@@ -56,7 +56,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/profile";
 
   const userRef = useRef();
   const errRef = useRef();
@@ -77,6 +77,8 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      console.log("Try block in Login.js below");
+      console.log({ user, pwd });
       const response = await axios.post(
         LOGIN_URL,
         JSON.stringify({ email: user, pwd }),
@@ -85,20 +87,31 @@ const Login = () => {
           withCredentials: true,
         }
       );
+      console.log("response?.data at Login.js below");
       console.log(JSON.stringify(response?.data));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
-      setAuth({ user, pwd, roles, accessToken });
+      setAuth({ user, pwd, roles, accessToken }); //Todo, add the idd too.
       setUser("");
       setPwd("");
-      navigate(from, { replace: true });
+      if (from === "/profile" || from === "/") {
+        navigate("/profile/" + response.data.id, { replace: true });
+        console.log("Heading to " + from + "/profile/" + response.data.id);
+      } else {
+        console.log("Heading to " + from);
+        navigate(from, { replace: true });
+      }
+      // navigate(from, { replace: true });
+      // navigate("/profile/" + response.data.id, { replace: true });
+      // console.log("Heading to " + from + "/profile/" + response.data.id);
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {
         setErrMsg("Missing Username or Password");
       } else if (err.response?.status === 401) {
-        setErrMsg("Unauthorized");
+        //Unauthorized
+        setErrMsg("User name or password is wrong");
       } else {
         setErrMsg("Login Failed");
       }
@@ -108,108 +121,62 @@ const Login = () => {
 
   return (
     <>
-      {/* <section>
-        <p
-          ref={errRef}
-          className={errMsg ? "errmsg" : "offscreen"}
-          aria-live="assertive"
-        >
-          {errMsg}
-        </p>
-
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            ref={userRef}
-            autoComplete="off"
-            onChange={(e) => setUser(e.target.value)}
-            value={user}
-            required
-          />
-
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            onChange={(e) => setPwd(e.target.value)}
-            value={pwd}
-            required
-          />
-          <button>LOGIN</button>
-        </form>
-        <p>
-          <span className="line">
-            <Link to="/register">Sign Up</Link>
-          </span>
-        </p>
-      </section> */}
-      {/* <CssBaseline /> */}
-      <Container maxWidth="sm">
-        <form onSubmit={handleSubmit}>
-          <Stack
-            alignItems="stretch"
-            justifyContent="center"
-            spacing={1}
-            sx={{ bgcolor: "#cfe8fc" }}
+      <Container maxWidth="md">
+        <Box sx={{ textAlign: "center" }} m={2}>
+          <Button
+            variant="text"
+            ref={errRef}
+            className={!errMsg ? "" : "offscreen"}
+            aria-live="assertive"
+            color="error"
           >
-            <Box sx={{ textAlign: "center" }}>
+            {errMsg}
+          </Button>
+        </Box>
+        <Box component="form" onSubmit={handleSubmit}>
+          <Stack alignItems="stretch" justifyContent="center" spacing={1}>
+            <Box sx={{ textAlign: "center" }} mb={2}>
               <img src={logo} alt="login logo" width="150px" />
             </Box>
 
-            <Item>
-              <label htmlFor="username">
-                <Typography variant="h5">Username</Typography>
-              </label>
-            </Item>
-            <Box sx={{ height: 1, alignContent: "center" }}>
-              <TextField
-                id="username"
-                variant="outlined"
-                type="text"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => setUser(e.target.value)}
-                value={user}
-                required
-              />
-              <input
-                type="text"
-                id="username"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => setUser(e.target.value)}
-                value={user}
-                required
-              />
-            </Box>
-            <Item>
-              <label htmlFor="password">
-                <Typography variant="h5">Password</Typography>
-              </label>
-            </Item>
-            <Box sx={{ textAlign: "left" }}>
-              <input
-                type="password"
-                id="password"
-                onChange={(e) => setPwd(e.target.value)}
-                value={pwd}
-                required
-              />
-            </Box>
+            <label htmlFor="username">
+              <Typography variant="h5">Username</Typography>
+            </label>
+
+            <TextField
+              id="username"
+              variant="outlined"
+              type="text"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+              required
+            />
+
+            <label htmlFor="password">
+              <Typography variant="h5">Password</Typography>
+            </label>
+
+            <TextField
+              id="password"
+              variant="outlined"
+              type="password"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setPwd(e.target.value)}
+              value={pwd}
+              required
+            />
+
             <Box sx={{ textAlign: "center" }}>
-              <StyledButton variant="contained">LOGIN</StyledButton>
+              <SubmitButton variant="contained">LOGIN</SubmitButton>
             </Box>
-            <Item>
-              <p>
-                <span className="line">
-                  <Link to="/register">Sign Up</Link>
-                </span>
-              </p>
-            </Item>
           </Stack>
-        </form>
+        </Box>
+        <Link to="/register">
+          <Typography variant="body1">Sign Up</Typography>
+        </Link>
       </Container>
     </>
   );
