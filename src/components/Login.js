@@ -96,6 +96,12 @@ const Login = () => {
       setPwd("");
       //Generally, we should just redirect to the home page
       if (from === "/profile" || from === "/") {
+        if (
+          response?.data?.id &&
+          (response.data.id === null || response.data.id === undefined)
+        ) {
+          navigate("/missing", { replace: true });
+        }
         navigate("/profile/" + response.data.id, { replace: true });
         console.log("Heading to " + from + "/profile/" + response.data.id);
       } else {
@@ -116,24 +122,23 @@ const Login = () => {
       } else {
         setErrMsg("Login Failed");
       }
-      errRef.current.focus();
+      // errRef.current.focus();
     }
   };
 
   return (
     <>
       <Container maxWidth="md">
-        <Box sx={{ textAlign: "center" }} m={2}>
+        {/* <Box sx={{ textAlign: "center" }} m={2}>
           <Button
             variant="text"
             ref={errRef}
-            className={!errMsg ? "" : "offscreen"}
             aria-live="assertive"
             color="error"
           >
             {errMsg}
           </Button>
-        </Box>
+        </Box> */}
         <Box component="form" onSubmit={handleSubmit}>
           <Stack alignItems="stretch" justifyContent="center" spacing={1}>
             <Box sx={{ textAlign: "center" }} mb={2}>

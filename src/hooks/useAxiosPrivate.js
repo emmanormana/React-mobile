@@ -17,6 +17,7 @@ const useAxiosPrivate = () => {
       },
       (error) => Promise.reject(error)
     );
+
     const responseIntercept = axiosPrivate.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -26,9 +27,8 @@ const useAxiosPrivate = () => {
           const newAccessToken = await refresh();
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return axiosPrivate(prevRequest);
-        } else {
-          return Promise.reject(error);
         }
+        return Promise.reject(error);
       }
     );
 

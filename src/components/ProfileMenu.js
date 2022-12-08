@@ -1,40 +1,37 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
+
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
+
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+import { useNavigate, Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import AuthContext from "../context/AuthProvider";
 
-const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ProfileMenu() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
+  const logout = async () => {
+    // if used in more components, this should be in context
+    // axios to /logout endpoint
+    setAuth({});
+    navigate("/");
+  };
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
@@ -65,11 +62,9 @@ function ProfileMenu() {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {settings.map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography textAlign="center">{setting}</Typography>
-          </MenuItem>
-        ))}
+        <MenuItem onClick={handleCloseUserMenu}>Profile</MenuItem>
+        <MenuItem onClick={handleCloseUserMenu}>My account</MenuItem>
+        <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>
     </Box>
   );

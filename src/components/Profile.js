@@ -15,42 +15,15 @@ import { grey } from "@mui/material/colors";
 import ProfileMenu from "./ProfileMenu";
 
 //MUI use detail
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import { Button } from "@mui/material";
 import Balance from "./Balance";
 import ProfileEditing from "./ProfileEditing";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
 //MUI
 const Profile = () => {
-  const example = {
-    _id: "5410953eb0e0c0ae25608277",
-    guid: "eab0324c-75ef-49a1-9c49-be2d68f50b96",
-    isActive: true,
-    balance: "$3,585.69",
-    picture: "http://placehold.it/32x32",
-    age: 30,
-    eyeColor: "blue",
-    name: {
-      first: "Henderson",
-      last: "Briggs",
-    },
-    company: "GEEKNET",
-    email: "henderson.briggs@geeknet.net",
-    phone: "+1 (936) 451-3590",
-    address: "121 National Drive, Cotopaxi, Michigan, 8240",
-  };
-
   const [user, setUser] = useState();
-  const [showEdit, setShowEdit] = useState(true);
+  const [showEdit, setShowEdit] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -66,11 +39,9 @@ const Profile = () => {
           "/info/" + id,
 
           {
+            withCredentials: true,
             signal: controller.signal,
           }
-        );
-        console.log(
-          "response.data from info: " + JSON.stringify(response.data)
         );
         isMounted && setUser(response.data);
       } catch (err) {
@@ -79,9 +50,6 @@ const Profile = () => {
         //replace it with the one before the login
         navigate("/login", { state: { from: location }, replace: true });
       }
-      console.log("1-------------------");
-      console.log(user);
-      console.log("2-------------------");
     };
 
     getUser();
@@ -95,16 +63,14 @@ const Profile = () => {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <AppBar position="static" color="grey">
           <Toolbar>
             <Typography
               variant="h6"
               align="center"
               component="div"
               sx={{ flexGrow: 1, ml: 1 }}
-            >
-              Profile
-            </Typography>
+            ></Typography>
             <ProfileMenu />
           </Toolbar>
         </AppBar>
@@ -137,13 +103,9 @@ const Profile = () => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-            >
-              <Item>xs=12</Item>
-            </Grid>
+            ></Grid>
 
-            <Grid xs={1} sm={1}>
-              <Item>xs=2</Item>
-            </Grid>
+            <Grid xs={1} sm={1}></Grid>
             <Grid xs={4} sm={5} md={4}>
               {user.balance !== "not authorized" ? (
                 <Balance amount={user.balance}>Balance</Balance>
@@ -182,9 +144,7 @@ const Profile = () => {
                 Edit
               </Button>
             </Grid>
-            <Grid xs={1} sm={1}>
-              <Item>xs=2</Item>
-            </Grid>
+            <Grid xs={1} sm={1}></Grid>
 
             {showEdit && (
               <Grid
