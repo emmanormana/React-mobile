@@ -27,7 +27,7 @@ const SubmitButton = (props) => (
     {props.children}
   </Button>
 );
-const RegisterForm = () => {
+const RegisterForm = ({ handleSubmit }) => {
   return (
     <Box
       component="form"
@@ -35,6 +35,7 @@ const RegisterForm = () => {
         flexGrow: 1,
         "& .MuiTextField-root": { m: 1 },
       }}
+      onSubmit={handleSubmit}
       noValidate
       autoComplete="off"
     >
