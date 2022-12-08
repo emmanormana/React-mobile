@@ -10,15 +10,17 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+//drop down menu for balance button and the drop down
 import { grey } from "@mui/material/colors";
+import ProfileMenu from "./ProfileMenu";
 
 //MUI use detail
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Button, ButtonGroup } from "@mui/material";
+import { Button } from "@mui/material";
+import Balance from "./Balance";
+import ProfileEditing from "./ProfileEditing";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -47,56 +49,50 @@ const Profile = () => {
     address: "121 National Drive, Cotopaxi, Michigan, 8240",
   };
 
-  const [users, setUsers] = useState();
+  const [user, setUser] = useState();
+  const [showEdit, setShowEdit] = useState(true);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  console.log("id is " + id);
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
-    // const getUsers = async () => {
-    //   try {
-    //     const response = await axiosPrivate.get(
-    //       "/info",
+    const getUser = async () => {
+      try {
+        const response = await axiosPrivate.get(
+          "/info/" + id,
 
-    //       {
-    //         // params: { id: "Testing2" },
-    //         signal: controller.signal,
-    //       }
-    //     );
-    //     console.log("response.data from info: " + response.data);
-    //     isMounted && setUsers(response.data);
-    //   } catch (err) {
-    //     console.error(err);
-    //     navigate("/login", { state: { from: location }, replace: true });
-    //   }
-    // };
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(
+          "response.data from info: " + JSON.stringify(response.data)
+        );
+        isMounted && setUser(response.data);
+      } catch (err) {
+        console.error(err);
+        //remove the last navigation history, which is the login
+        //replace it with the one before the login
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+      console.log("1-------------------");
+      console.log(user);
+      console.log("2-------------------");
+    };
 
-    // getUsers();
+    getUser();
 
-    // return () => {
-    //   isMounted = false;
-    //   controller.abort();
-    // };
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   return (
-    // <article>
-    //   <h2>Users List</h2>
-    //   {users?.length ? (
-    //     <ul>
-    //       {users.map((user, i) => (
-    //         <li key={i}>{user?.username}</li>
-    //       ))}
-    //     </ul>
-    //   ) : (
-    //     <p>No users to display</p>
-    //   )}
-    // </article>
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
@@ -105,108 +101,129 @@ const Profile = () => {
               variant="h6"
               align="center"
               component="div"
-              sx={{ flexGrow: 25, ml: 1 }}
+              sx={{ flexGrow: 1, ml: 1 }}
             >
               Profile
             </Typography>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              // sx={{ mr: 2 }}
-              sx={{ flexGrow: 0 }}
-            >
-              <MenuIcon />
-            </IconButton>
+            <ProfileMenu />
           </Toolbar>
         </AppBar>
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid
-          container
-          spacing={1.5}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
+      {user && (
+        <Box sx={{ flexGrow: 1 }}>
           <Grid
-            my={5}
-            xs={12}
+            container
+            spacing={2}
             display="flex"
             justifyContent="center"
             alignItems="center"
           >
-            <Avatar
-              sizes="300px"
-              alt="Remy Sharp"
-              src={Icon}
-              sx={{ width: 300, height: 300, textAlign: "center" }}
-            />
-          </Grid>
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Item>xs=12</Item>
-          </Grid>
+            <Grid
+              my={5}
+              xs={12}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Avatar
+                sizes="300px"
+                alt="Default User Avatar"
+                src={Icon}
+                sx={{ width: 300, height: 300, textAlign: "center" }}
+              />
+            </Grid>
+            <Grid
+              xs={12}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Item>xs=12</Item>
+            </Grid>
 
-          <Grid xs={2}>
-            <Item>xs=2</Item>
-          </Grid>
-          <Grid
-            xs={4}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Button variant="contained" sx={{ width: 250 }}>
-              Balance
-            </Button>
-          </Grid>
-          <Grid
-            xs={4}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Button variant="contained" sx={{ width: 250 }}>
-              Edit
-            </Button>
-          </Grid>
-          <Grid xs={2}>
-            <Item>xs=2</Item>
-          </Grid>
+            <Grid xs={1} sm={1}>
+              <Item>xs=2</Item>
+            </Grid>
+            <Grid xs={4} sm={5} md={4}>
+              {user.balance !== "not authorized" ? (
+                <Balance amount={user.balance}>Balance</Balance>
+              ) : (
+                <Button
+                  disabled
+                  variant="contained"
+                  sx={{
+                    width: "100%",
+                    color: "black",
+                    backgroundColor: grey[400],
+                    fontWeight: "bold",
+                  }}
+                >
+                  Balance
+                </Button>
+              )}
+            </Grid>
+            <Grid xs={4} sm={5} md={4}>
+              <Button
+                sx={{
+                  width: "100%",
+                  color: "black",
+                  backgroundColor: grey[400],
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "white",
+                  },
+                }}
+                // sx={{ width: { xs: 100, sm: 310 } }}
+                variant="contained"
+                onClick={() => {
+                  setShowEdit(!showEdit);
+                }}
+              >
+                Edit
+              </Button>
+            </Grid>
+            <Grid xs={1} sm={1}>
+              <Item>xs=2</Item>
+            </Grid>
 
-          <Grid xs={8}>
-            <RowDetail
-              title={example.name.first + " " + example.name.last}
-              text={
-                "Age: " + example.age + " and Eye color: " + example.eyeColor
-              }
-              avatar_letter={example.name.first.charAt(0)}
-            />
+            {showEdit && (
+              <Grid
+                xs={8}
+                container
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <ProfileEditing id={id} />
+              </Grid>
+            )}
+
+            <Grid xs={8}>
+              <RowDetail
+                title={user.name.first + " " + user.name.last}
+                text={"Age: " + user.age + " and Eye color: " + user.eyeColor}
+                avatar_letter={user.name.first.charAt(0)}
+              />
+            </Grid>
+            <Grid xs={8}>
+              <RowDetail
+                title={"Contact Information: " + user.email}
+                text={
+                  "Email: " +
+                  user.email +
+                  " and Company: " +
+                  user.company +
+                  " Phone: " +
+                  user.phone
+                }
+              />
+            </Grid>
+            <Grid xs={8}>
+              <RowDetail title={"Address: "} text={user.address} />
+            </Grid>
           </Grid>
-          <Grid xs={8}>
-            <RowDetail
-              title={"Contact Information: " + example.email}
-              text={
-                "Email: " +
-                example.email +
-                " and Company: " +
-                example.company +
-                " Phone: " +
-                example.phone
-              }
-            />
-          </Grid>
-          <Grid xs={8}>
-            <RowDetail title={"Address: "} text={example.address} />
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      )}
     </>
   );
 };

@@ -91,9 +91,10 @@ const Login = () => {
       console.log(JSON.stringify(response?.data));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
-      setAuth({ user, pwd, roles, accessToken }); //Todo, add the idd too.
+      setAuth({ user, pwd, roles, accessToken });
       setUser("");
       setPwd("");
+      //Generally, we should just redirect to the home page
       if (from === "/profile" || from === "/") {
         navigate("/profile/" + response.data.id, { replace: true });
         console.log("Heading to " + from + "/profile/" + response.data.id);
