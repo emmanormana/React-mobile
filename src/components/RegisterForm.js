@@ -51,11 +51,11 @@ const RegisterForm = ({ handleSubmit }) => {
             <img src={logo} alt="login logo" width="150px" />
           </Box>
         </Grid>
-        <Grid xs={12} items ml={2}>
+        <Grid xs={12} item md={2}>
           <TextField id="outlined-basic" label="Email" variant="outlined" />
         </Grid>
 
-        <Grid item xs={12} items>
+        <Grid item xs={12}>
           <TextField id="outlined-basic" label="Password" variant="outlined" />
         </Grid>
 
@@ -73,12 +73,11 @@ const RegisterForm = ({ handleSubmit }) => {
 
         <Grid
           container
-          xs={12}
           direction="column"
           justifyContent="center"
           alignItems="center"
         >
-          <Grid items xs={6} justifyContent="flex-start" alignItems="center">
+          <Grid item xs={6} justifyContent="flex-start" alignItems="center">
             <TextField
               type="number"
               id="outlined-basic"
@@ -97,7 +96,7 @@ const RegisterForm = ({ handleSubmit }) => {
             />
           </Grid>
 
-          <Grid xs={6}>
+          <Grid item xs={6}>
             <TextField
               id="outlined-basic"
               label="Eye Color"
@@ -116,7 +115,7 @@ const RegisterForm = ({ handleSubmit }) => {
             />
           </Grid>
         </Grid>
-        <Grid items xs={12}>
+        <Grid item xs={12}>
           <SubmitButton variant="contained">Register</SubmitButton>
         </Grid>
       </Grid>

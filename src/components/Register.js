@@ -8,14 +8,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "../api/axios";
 import { Link } from "react-router-dom";
+import Warning from "./Warning";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const REGISTER_URL = "/register";
 
 const Register = () => {
-  const userRef = useRef();
-  const errRef = useRef();
+  //   const userRef = useRef();
+  //   const errRef = useRef();
 
   const [user, setUser] = useState("");
   const [validName, setValidName] = useState(false);
@@ -32,9 +33,9 @@ const Register = () => {
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
+  //   useEffect(() => {
+  //     userRef.current.focus();
+  //   }, []);
 
   useEffect(() => {
     setValidName(USER_REGEX.test(user));
@@ -67,11 +68,9 @@ const Register = () => {
           withCredentials: true,
         }
       );
-      // TODO: remove console.logs before deployment
+
       console.log(JSON.stringify(response?.data));
-      //console.log(JSON.stringify(response))
       setSuccess(true);
-      //clear state and controlled inputs
       setUser("");
       setPwd("");
       setMatchPwd("");
@@ -83,7 +82,7 @@ const Register = () => {
       } else {
         setErrMsg("Registration Failed");
       }
-      errRef.current.focus();
+      //   errRef.current.focus();
     }
   };
 
@@ -233,16 +232,21 @@ const Register = () => {
         </section>
       )} */}
       <>
+        {/* <Warning message={""} /> */}
         <p
-          ref={errRef}
+          //   ref={errRef}
           className={errMsg ? "errmsg" : "offscreen"}
           aria-live="assertive"
-        ></p>
+        >
+          Yes?
+        </p>
         <p
-          ref={userRef}
+          //   ref={userRef}
           className={errMsg ? "errmsg" : "offscreen"}
           aria-live="assertive"
-        ></p>
+        >
+          Yes??
+        </p>
         <RegisterForm handleSubmit={handleSubmit} />
       </>
     </>
