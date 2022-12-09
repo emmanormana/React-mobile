@@ -240,7 +240,6 @@ const RegisterForm = ({ SucessComp }) => {
                   alignItems="center"
                 >
                   <TextField
-                    type="number"
                     id="balance"
                     label="Balance"
                     variant="standard"
